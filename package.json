@@ -1,0 +1,43 @@
+{
+  "name": "ollama-multi-model-discussion",
+  "version": "1.0.0",
+  "description": "A web application for multi-model AI discussions using Ollama",
+  "main": "src/server/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"blue,green\" \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "nodemon src/server/index.js",
+    "client:dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node src/server/index.js",
+    "optimize": "node optimize-discussion-performance.js",
+    "dev:gpu": "set OLLAMA_NUM_GPU=1 && set OLLAMA_FORCE_GPU=1 && set OLLAMA_SKIP_CPU_GENERATE=1 && npm run dev",
+    "verify:gpu": "node verify-gpu-working.js",
+    "fix:gpu": "node fix-gpu-configuration.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
+    "ollama": "^0.5.16",
+    "uuid": "^9.0.1",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2",
+    "vite": "^5.0.0"
+  },
+  "keywords": [
+    "ollama",
+    "ai",
+    "multi-model",
+    "discussion",
+    "web-app"
+  ],
+  "author": "",
+  "license": "MIT"
+}

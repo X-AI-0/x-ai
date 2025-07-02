@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussions - Ollama Multi-Model Discussion System</title>
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/components/navbar.css">
+    <link rel="stylesheet" href="discussion.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation will be automatically inserted here by NavBar component -->
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>AI Model Discussions</h1>
+                <button class="btn btn-primary" id="newDiscussionBtn">
+                    <i class="fas fa-plus"></i>
+                    New Discussion
+                </button>
+            </div>
+
+            <!-- Discussion Stats -->
+            <div class="stats-grid" id="discussionStats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalDiscussions">0</div>
+                        <div class="stat-label">Total Discussions</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="runningDiscussions">0</div>
+                        <div class="stat-label">Running</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="completedDiscussions">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-message"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalMessages">0</div>
+                        <div class="stat-label">Total Messages</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="storageSize">0 KB</div>
+                        <div class="stat-label">Storage Used</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="backupCount">0</div>
+                        <div class="stat-label">Backups</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Management -->
+            <div class="storage-management">
+                <div class="storage-header">
+                    <h3>Storage Management</h3>
+                    <div class="storage-actions">
+                        <button class="btn btn-secondary btn-sm" id="refreshStorageBtn">
+                            <i class="fas fa-refresh"></i>
+                            Refresh
+                        </button>
+                        <button class="btn btn-primary btn-sm" id="createBackupBtn">
+                            <i class="fas fa-archive"></i>
+                            Create Backup
+                        </button>
+                        <button class="btn btn-warning btn-sm" id="cleanupStorageBtn">
+                            <i class="fas fa-broom"></i>
+                            Cleanup
+                        </button>
+                    </div>
+                </div>
+                <div class="storage-info" id="storageInfo">
+                    <div class="storage-status">
+                        <span class="status-indicator" id="storageStatus">
+                            <i class="fas fa-circle"></i>
+                            <span>Loading...</span>
+                        </span>
+                    </div>
+                    <div class="storage-details" id="storageDetails">
+                        <!-- Storage details will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discussions List -->
+            <div class="discussions-container">
+                <div class="discussions-header">
+                    <h2>Recent Discussions</h2>
+                    <div class="filter-controls">
+                        <select id="statusFilter" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="running">Running</option>
+                            <option value="completed">Completed</option>
+                            <option value="stopped">Stopped</option>
+                            <option value="error">Error</option>
+                        </select>
+                        <button class="btn btn-secondary btn-sm" id="refreshBtn">
+                            <i class="fas fa-refresh"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="discussions-list" id="discussionsList">
+                    <!-- Discussions will be loaded here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- New Discussion Modal -->
+        <div id="newDiscussionModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Create New Discussion</h2>
+                    <button class="modal-close" data-modal="newDiscussionModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newDiscussionForm">
+                        <div class="form-group">
+                            <label for="discussionTopic">Discussion Topic</label>
+                            <input type="text" id="discussionTopic" class="form-input" placeholder="e.g., The nature of consciousness" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="participatingModels">Participating Models</label>
+                            <div class="model-selection" id="modelSelection">
+                                <!-- Model checkboxes will be populated here -->
+                            </div>
+                            <small class="form-help">Select at least 2 models for the discussion</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="summaryModelSelect">Summary Model</label>
+                            <select id="summaryModelSelect" class="form-select" required>
+                                <option value="">Choose model for summary...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxRoundsInput">Maximum Rounds</label>
+                            <input type="number" id="maxRoundsInput" class="form-input" value="5" min="1" max="20" required>
+                            <small class="form-help">Number of discussion rounds (1-20)</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="newDiscussionModal">Cancel</button>
+                    <button type="submit" form="newDiscussionForm" class="btn btn-primary">Create Discussion</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Discussion Detail Modal -->
+        <div id="discussionDetailModal" class="modal modal-large">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="discussionDetailTitle">Discussion Details</h2>
+                    <button class="modal-close" data-modal="discussionDetailModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="discussionDetailContent">
+                        <!-- Discussion details will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading...</span>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { NavBar } from '../../js/components/navbar.js';
+        import './discussion.js';
+        
+        // Initialize navigation bar
+        const navbar = new NavBar({ currentPage: 'discussions' });
+        window.navbar = navbar;
+    </script>
+</body>
+</html> 

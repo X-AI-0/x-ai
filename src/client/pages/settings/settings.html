@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Ollama Multi-Model Discussion System</title>
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/components/navbar.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation will be automatically inserted here by NavBar component -->
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Settings</h1>
+            </div>
+
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h3>Ollama Configuration</h3>
+                    <div class="form-group">
+                        <label for="ollamaHost">Ollama Host URL</label>
+                        <input type="text" id="ollamaHost" class="form-input" value="http://localhost:11434">
+                        <small class="form-help">The URL where your Ollama service is running</small>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-secondary" id="testConnectionBtn">
+                            <i class="fas fa-plug"></i>
+                            Test Connection
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <details class="collapsible-section">
+                        <summary class="section-header">
+                            <h3>Social Media Integration</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </summary>
+                        <div class="section-content">
+                            <div class="subsection">
+                                <h4><i class="fab fa-github"></i> GitHub Integration</h4>
+                    <div class="github-info">
+                        <div class="info-box">
+                            <i class="fab fa-github"></i>
+                            <div class="info-content">
+                                            <h5>GitHub Personal Access Token</h5>
+                                            <p>Required for social media integration and increases API rate limits from 60 to 5,000 requests per hour.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="githubToken">GitHub Personal Access Token</label>
+                        <div class="input-with-button">
+                            <input type="password" id="githubToken" class="form-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                            <button type="button" class="btn btn-sm btn-secondary" id="toggleTokenVisibility">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small class="form-help">
+                            Optional: Provide a GitHub token to avoid rate limits. 
+                            <a href="https://github.com/settings/tokens" target="_blank" class="help-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                Create token
+                            </a>
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-secondary" id="testGithubTokenBtn">
+                            <i class="fab fa-github"></i>
+                            Test GitHub Token
+                        </button>
+                        <button class="btn btn-warning" id="clearGithubTokenBtn">
+                            <i class="fas fa-trash"></i>
+                            Clear Token
+                        </button>
+                    </div>
+                    <div id="githubTokenStatus" class="token-status" style="display: none;">
+                        <div class="status-content">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="status-text">Token status will appear here</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h4>Social Media Integration Settings</h4>
+                        <div class="form-group">
+                            <label for="githubUsername">GitHub Username</label>
+                            <input type="text" id="githubUsername" class="form-input" placeholder="Your GitHub username">
+                            <small class="form-help">Used for repository selection in social media integration</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="githubDefaultRepo">Default Repository</label>
+                            <input type="text" id="githubDefaultRepo" class="form-input" placeholder="username/repository-name">
+                            <small class="form-help">Default repository for social media posts (e.g., "username/my-blog")</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="githubAutoCommit">
+                                <span class="checkmark"></span>
+                                Auto-commit social media posts
+                            </label>
+                            <small class="form-help">Automatically commit when publishing posts to GitHub</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="githubCommitMessage">Default Commit Message</label>
+                            <input type="text" id="githubCommitMessage" class="form-input" placeholder="Update from social media integration">
+                            <small class="form-help">Default commit message for social media posts</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="githubBranch">Target Branch</label>
+                            <input type="text" id="githubBranch" class="form-input" placeholder="main">
+                            <small class="form-help">Branch to push social media posts to</small>
+                        </div>
+                    </div>
+                    
+                    <div class="github-instructions">
+                        <details>
+                            <summary>How to create a GitHub Personal Access Token</summary>
+                            <div class="instructions-content">
+                                <ol>
+                                    <li>Go to <a href="https://github.com/settings/tokens" target="_blank">GitHub Settings → Personal access tokens</a></li>
+                                    <li>Click "Generate new token" → "Generate new token (classic)"</li>
+                                                <li>Give it a descriptive name like "Ollama Social Media Integration"</li>
+                                    <li>Set expiration (recommended: 90 days or No expiration)</li>
+                                                <li>Select scopes: <strong>'repo' scope required</strong> for social media integration</li>
+                                    <li>Click "Generate token"</li>
+                                    <li>Copy the token and paste it above</li>
+                                </ol>
+                                <div class="note">
+                                    <i class="fas fa-shield-alt"></i>
+                                                <strong>Security Note:</strong> The token is stored locally. For social media integration, 'repo' scope is required to push posts to repositories.
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                            </div>
+
+                            <div class="subsection">
+                                <h4><i class="fab fa-x-twitter"></i> X (Twitter) Integration</h4>
+                                <div class="form-group">
+                                    <label>Authentication Method</label>
+                                    <div class="auth-method-selector">
+                                        <label class="radio-option">
+                                            <input type="radio" name="xAuthMethod" value="bearer" id="xAuthMethodBearer" checked>
+                                            <span>Bearer Token (Recommended)</span>
+                                            <small>Easiest setup - App-only authentication</small>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="xAuthMethod" value="oauth" id="xAuthMethodOAuth">
+                                            <span>OAuth 1.0a</span>
+                                            <small>Full user context - Required for posting tweets</small>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Bearer Token Configuration -->
+                                <div id="xBearerTokenConfig" class="auth-config-section">
+                                    <div class="form-group">
+                                        <label for="xBearerToken">X API Bearer Token</label>
+                                        <div class="input-with-button">
+                                            <input type="password" id="xBearerToken" class="form-input" placeholder="Your X API Bearer Token">
+                                            <button type="button" class="btn btn-sm btn-secondary" id="toggleXTokenVisibility">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <small class="form-help">
+                                            Find this in your X Developer Portal under "Keys and tokens" → "Bearer Token"
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- OAuth 1.0a Configuration -->
+                                <div id="xOAuthConfig" class="auth-config-section" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="xApiKey">X API Key</label>
+                                        <input type="password" id="xApiKey" class="form-input" placeholder="Your X API Key">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="xApiSecret">X API Secret</label>
+                                        <input type="password" id="xApiSecret" class="form-input" placeholder="Your X API Secret">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="xAccessToken">X Access Token</label>
+                                        <input type="password" id="xAccessToken" class="form-input" placeholder="Your X Access Token">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="xAccessTokenSecret">X Access Token Secret</label>
+                                        <input type="password" id="xAccessTokenSecret" class="form-input" placeholder="Your X Access Token Secret">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <h5>X Posting Settings</h5>
+                                    <div class="form-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="xAutoHashtags">
+                                            <span class="checkmark"></span>
+                                            Automatically add hashtags to posts
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="xDefaultHashtags">Default Hashtags</label>
+                                        <input type="text" id="xDefaultHashtags" class="form-input" placeholder="#AI #Discussion #Ollama">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="xConfirmBeforePost">
+                                            <span class="checkmark"></span>
+                                            Confirm before posting
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="x-instructions">
+                                    <details>
+                                        <summary>How to get X API credentials</summary>
+                                        <div class="instructions-content">
+                                            <ol>
+                                                <li>Go to <a href="https://developer.twitter.com/en/portal/dashboard" target="_blank">X Developer Portal</a></li>
+                                                <li>Create a new app or use an existing one</li>
+                                                <li>For Bearer Token: Go to "Keys and tokens" → "Bearer Token"</li>
+                                                <li>For OAuth: Generate API Key, API Secret, Access Token, and Access Token Secret</li>
+                                                <li>Copy the credentials and paste them above</li>
+                                            </ol>
+                                            <div class="note">
+                                                <i class="fas fa-shield-alt"></i>
+                                                <strong>Security Note:</strong> Bearer Token allows read-only access. OAuth 1.0a is required for posting tweets.
+                                            </div>
+                                        </div>
+                                    </details>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Discussion Defaults</h3>
+                    <div class="form-group">
+                        <label for="defaultRounds">Default Max Rounds</label>
+                        <input type="number" id="defaultRounds" class="form-input" value="5" min="1" max="20">
+                        <small class="form-help">Default number of discussion rounds (1-20)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="defaultSummaryModel">Default Summary Model</label>
+                        <select id="defaultSummaryModel" class="form-select">
+                            <option value="">Select a model...</option>
+                        </select>
+                        <small class="form-help">Model used for generating discussion summaries</small>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Model Parameters</h3>
+                    <div class="form-group">
+                        <label for="temperature">Temperature</label>
+                        <input type="number" id="temperature" class="form-input" value="0.7" min="0.1" max="2.0" step="0.1">
+                        <small class="form-help">Controls randomness in model responses (0.1-2.0). Lower values = more focused, higher values = more creative</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="topP">Top P (Nucleus Sampling)</label>
+                        <input type="number" id="topP" class="form-input" value="0.9" min="0.1" max="1.0" step="0.1">
+                        <small class="form-help">Controls diversity of model responses (0.1-1.0). Lower values = more focused, higher values = more diverse</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="numThread">Thread Count</label>
+                        <input type="number" id="numThread" class="form-input" value="4" min="1" max="64">
+                        <small class="form-help">Number of CPU threads for model inference (1-64)</small>
+                    </div>
+                    <div class="parameter-presets">
+                        <label>Quick Presets:</label>
+                        <div class="preset-buttons">
+                            <button type="button" class="btn btn-sm btn-secondary preset-btn" data-preset="creative">
+                                <i class="fas fa-lightbulb"></i>
+                                Creative (T:1.0, P:0.95)
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary preset-btn" data-preset="balanced">
+                                <i class="fas fa-balance-scale"></i>
+                                Balanced (T:0.7, P:0.9)
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary preset-btn" data-preset="focused">
+                                <i class="fas fa-bullseye"></i>
+                                Focused (T:0.3, P:0.7)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Interface</h3>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="autoRefresh">
+                            <span class="checkmark"></span>
+                            Auto-refresh discussions
+                        </label>
+                        <small class="form-help">Automatically refresh discussion list every 30 seconds</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="soundNotifications">
+                            <span class="checkmark"></span>
+                            Sound notifications
+                        </label>
+                        <small class="form-help">Play sound when discussions complete or errors occur</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="theme">Theme</label>
+                        <select id="theme" class="form-select">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="auto">Auto (System)</option>
+                        </select>
+                        <small class="form-help">Choose your preferred color theme</small>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>GPU Configuration</h3>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enableGPU" checked>
+                            <span class="checkmark"></span>
+                            Enable GPU Acceleration
+                        </label>
+                        <small class="form-help">Use GPU for faster model inference</small>
+                    </div>
+                    <div class="form-group" id="gpuSelectionGroup">
+                        <label for="selectedGPU">Select GPU</label>
+                        <select id="selectedGPU" class="form-select">
+                            <option value="-1">Use All Available GPUs</option>
+                        </select>
+                        <small class="form-help">Choose which GPU to use for model inference</small>
+                    </div>
+                    <div class="form-group" id="numGPUGroup">
+                        <label for="numGPU">Number of GPUs</label>
+                        <input type="number" id="numGPU" class="form-input" value="-1" min="-1" max="8">
+                        <small class="form-help">Number of GPUs to use (-1 for all available)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-secondary" id="detectGPUsBtn">
+                            <i class="fas fa-search"></i>
+                            Detect GPUs
+                        </button>
+                        <button class="btn btn-secondary" id="resetGPUBtn">
+                            <i class="fas fa-undo"></i>
+                            Reset GPU Settings
+                        </button>
+                    </div>
+                    <div id="gpuStatus" class="gpu-status" style="display: none;">
+                        <h4>Detected GPUs:</h4>
+                        <div id="gpuList" class="gpu-list"></div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Advanced</h3>
+                    <div class="form-group">
+                        <label for="maxConcurrentDiscussions">Max Concurrent Discussions</label>
+                        <input type="number" id="maxConcurrentDiscussions" class="form-input" value="3" min="1" max="10">
+                        <small class="form-help">Maximum number of discussions that can run simultaneously</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="messageTimeout">Message Timeout (seconds)</label>
+                        <input type="number" id="messageTimeout" class="form-input" value="60" min="10" max="300">
+                        <small class="form-help">Timeout for AI model responses</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="debugMode">
+                            <span class="checkmark"></span>
+                            Debug Mode
+                        </label>
+                        <small class="form-help">Enable detailed logging for troubleshooting</small>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Data Management</h3>
+                    <div class="form-group">
+                        <button class="btn btn-secondary" id="exportDataBtn">
+                            <i class="fas fa-download"></i>
+                            Export Data
+                        </button>
+                        <small class="form-help">Export all discussions and settings to a JSON file</small>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-warning" id="clearDataBtn">
+                            <i class="fas fa-trash"></i>
+                            Clear All Data
+                        </button>
+                        <small class="form-help">Delete all discussions and reset settings (cannot be undone)</small>
+                    </div>
+                </div>
+
+                <div class="settings-actions">
+                    <button class="btn btn-primary" id="saveSettingsBtn">
+                        <i class="fas fa-save"></i>
+                        Save Settings
+                    </button>
+                    <button class="btn btn-secondary" id="resetSettingsBtn">
+                        <i class="fas fa-undo"></i>
+                        Reset to Defaults
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="confirmationTitle">Confirm Action</h2>
+                    <button class="modal-close" data-modal="confirmationModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmationMessage">Are you sure you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="confirmationModal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading...</span>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { NavBar } from '../../js/components/navbar.js';
+        import './settings.js';
+        
+        // Initialize navigation bar
+        const navbar = new NavBar({ currentPage: 'settings' });
+        window.navbar = navbar;
+    </script>
+</body>
+</html> 

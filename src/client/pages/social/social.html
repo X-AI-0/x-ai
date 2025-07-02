@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Integration - Ollama Multi-Model Discussion System</title>
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/components/navbar.css">
+    <link rel="stylesheet" href="social.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation will be automatically inserted here by NavBar component -->
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Social Media Integration</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="demoModeBtn">
+                        <i class="fas fa-play"></i>
+                        Demo Mode
+                    </button>
+                    <a href="../settings/settings.html" class="btn btn-secondary">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </div>
+            </div>
+
+            <!-- Platform Status Cards -->
+            <div class="platform-status-grid">
+                <div class="platform-card" id="xPlatformCard">
+                    <div class="platform-header">
+                        <div class="platform-icon">
+                            <i class="fab fa-x-twitter"></i>
+                        </div>
+                        <div class="platform-info">
+                            <h3>X (Twitter)</h3>
+                            <span class="platform-status" id="xStatus">Disconnected</span>
+                            <small class="platform-note">Configure X credentials in Settings page to enable functionality</small>
+                        </div>
+                    </div>
+                    <div class="platform-stats" id="xStats">
+                        <div class="stat-item">
+                            <span class="stat-label">Posts Today</span>
+                            <span class="stat-value" id="xPostsToday">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Posts</span>
+                            <span class="stat-value" id="xTotalPosts">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Post</span>
+                            <span class="stat-value" id="xLastPost">Never</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="platform-card" id="githubPlatformCard">
+                    <div class="platform-header">
+                        <div class="platform-icon github-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="platform-info">
+                            <h3>GitHub</h3>
+                            <span class="platform-status" id="githubStatus">Disconnected</span>
+                            <small class="platform-note github-platform-note">Configure GitHub token in Settings page to enable functionality</small>
+                        </div>
+                    </div>
+                    <div class="platform-stats" id="githubStats">
+                        <div class="stat-item">
+                            <span class="stat-label">Repositories</span>
+                            <span class="stat-value" id="githubRepos">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Pushed Posts</span>
+                            <span class="stat-value" id="githubPosts">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Push</span>
+                            <span class="stat-value" id="githubLastPush">Never</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="section-header">
+                    <h2>Search X Posts</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary" id="getTrendingBtn">
+                            <i class="fas fa-fire"></i>
+                            Trending Topics
+                        </button>
+                    </div>
+                </div>
+                <div class="search-form">
+                    <div class="search-input-group">
+                        <input type="text" id="searchQuery" class="form-input" placeholder="Search for posts... (e.g., #AI, @username, keyword)">
+                        <button class="btn btn-primary" id="searchBtn">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                    </div>
+                    <div class="search-options">
+                        <label>
+                            <input type="number" id="searchLimit" min="5" max="100" value="10" class="form-input-small">
+                            Results
+                        </label>
+                        <label>
+                            <input type="date" id="searchStartDate" class="form-input">
+                            From
+                        </label>
+                        <label>
+                            <input type="date" id="searchEndDate" class="form-input">
+                            To
+                        </label>
+                    </div>
+                </div>
+                <div class="search-results" id="searchResults">
+                    <!-- Search results will be displayed here -->
+                </div>
+            </div>
+
+            <!-- GitHub Integration Section -->
+            <div class="github-section">
+                <div class="section-header">
+                    <h2>GitHub Integration</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary" id="loadRepositoriesBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Load Repositories
+                        </button>
+                        <button class="btn btn-secondary" id="pullFromGitHubBtn">
+                            <i class="fas fa-download"></i>
+                            Pull Posts
+                        </button>
+                        <button class="btn btn-primary" id="testGitHubBtn">
+                            <i class="fas fa-plug"></i>
+                            Test Connection
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="github-content">
+                    <div class="github-repositories" id="githubRepositories">
+                        <!-- Repositories will be loaded here -->
+                    </div>
+                    
+                    <div class="github-recent-posts" id="githubRecentPosts">
+                        <!-- Recent posts from GitHub will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Creation Section -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Create & Share Content</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary" id="importDiscussionBtn">
+                            <i class="fas fa-download"></i>
+                            Import from Discussion
+                        </button>
+                        <button class="btn btn-primary" id="createPostBtn">
+                            <i class="fas fa-plus"></i>
+                            New Post
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Post Composer -->
+                <div class="post-composer" id="postComposer">
+                    <div class="composer-header">
+                        <h3>Compose Post</h3>
+                        <button class="btn btn-sm btn-secondary" id="closeComposerBtn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="composer-body">
+                        <div class="platform-selector">
+                            <label>
+                                <input type="checkbox" id="postToX" checked>
+                                <span class="platform-label">
+                                    <i class="fab fa-x-twitter"></i>
+                                    Post to X
+                                </span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="pushToGitHub">
+                                <span class="platform-label">
+                                    <i class="fab fa-github"></i>
+                                    Push to GitHub
+                                </span>
+                            </label>
+                        </div>
+                        <div class="content-input">
+                            <textarea 
+                                id="postContent" 
+                                placeholder="What's happening?"
+                                maxlength="280"
+                                rows="4"
+                            ></textarea>
+                            <div class="character-count">
+                                <span id="charCount">0</span>/280
+                            </div>
+                        </div>
+                        <div class="composer-options">
+                            <div class="option-group">
+                                <label for="schedulePost">
+                                    <input type="checkbox" id="schedulePost">
+                                    Schedule for later
+                                </label>
+                                <input type="datetime-local" id="scheduleTime" disabled>
+                            </div>
+                            <div class="option-group">
+                                <label for="addHashtags">
+                                    <input type="checkbox" id="addHashtags">
+                                    Auto-add hashtags
+                                </label>
+                                <input type="text" id="customHashtags" placeholder="#AI #Discussion #Ollama" disabled>
+                            </div>
+                        </div>
+                        <div class="composer-actions">
+                            <button class="btn btn-secondary" id="saveDraftBtn">
+                                <i class="fas fa-save"></i>
+                                Save Draft
+                            </button>
+                            <button class="btn btn-primary" id="publishPostBtn">
+                                <i class="fas fa-paper-plane"></i>
+                                Publish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts History -->
+            <div class="posts-section">
+                <div class="section-header">
+                    <h2>Recent Posts</h2>
+                    <div class="section-filters">
+                        <select id="platformFilter" class="form-select">
+                            <option value="">All Platforms</option>
+                            <option value="x">X (Twitter)</option>
+                        </select>
+                        <select id="statusFilter" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="published">Published</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="draft">Draft</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="posts-list" id="postsList">
+                    <!-- Posts will be loaded here -->
+                </div>
+            </div>
+        </main>
+
+
+
+        <!-- Import Discussion Modal -->
+        <div id="importDiscussionModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Import from Discussion</h2>
+                    <button class="modal-close" data-modal="importDiscussionModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="discussions-list" id="discussionsForImport">
+                        <!-- Discussions will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-modal="importDiscussionModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Processing...</span>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        // Import and initialize components
+        import { NavBar } from '../../js/components/navbar.js';
+        
+        // Initialize navigation bar
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = new NavBar({ currentPage: 'social' });
+            window.navbar = navbar;
+        });
+    </script>
+    
+    <script type="module" src="./social.js"></script>
+</body>
+</html> 

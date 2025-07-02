@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Models - Multi-Provider AI Discussion System</title>
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../../styles/components/navbar.css">
+    <link rel="stylesheet" href="models.css">
+    <link rel="stylesheet" href="../../styles/modelPuller.css">
+    <link rel="stylesheet" href="../../js/components/ModelSelector.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation will be automatically inserted here by NavBar component -->
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Model Management</h1>
+                <div class="header-actions">
+                    <div class="provider-selector">
+                        <label for="providerSelect">Provider:</label>
+                        <select id="providerSelect" class="form-select">
+                            <option value="">Loading providers...</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" id="configureProviderBtn">
+                        <i class="fas fa-cog"></i>
+                        Configure
+                    </button>
+                    <button class="btn btn-primary" id="pullModelBtn">
+                        <i class="fas fa-download"></i>
+                        Pull Model
+                    </button>
+                </div>
+            </div>
+
+            <!-- Provider Status Cards -->
+            <div class="providers-container">
+                <div class="providers-header">
+                    <h2>Model Providers</h2>
+                    <div class="view-controls">
+                        <button class="btn btn-secondary btn-sm" id="refreshProvidersBtn">
+                            <i class="fas fa-refresh"></i>
+                            Refresh All
+                        </button>
+                    </div>
+                </div>
+                <div class="providers-grid" id="providersGrid">
+                    <!-- Provider cards will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Ollama Service Management (Legacy) -->
+            <div class="status-card" id="ollamaStatus">
+                <div class="status-header">
+                    <h3>Ollama Service Management</h3>
+                    <div class="status-actions">
+                        <button class="btn btn-primary btn-sm" id="installOllamaBtn" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            Install Ollama
+                        </button>
+                        <button class="btn btn-info btn-sm" id="updateOllamaBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Update Ollama
+                        </button>
+                        <button class="btn btn-success btn-sm" id="startOllamaBtn">
+                            <i class="fas fa-play"></i>
+                            Start Ollama
+                        </button>
+                        <button class="btn btn-warning btn-sm" id="restartOllamaBtn">
+                            <i class="fas fa-redo"></i>
+                            Restart Ollama
+                        </button>
+                        <button class="btn btn-danger btn-sm" id="stopOllamaBtn">
+                            <i class="fas fa-stop"></i>
+                            Stop Ollama
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" id="uninstallOllamaBtn">
+                            <i class="fas fa-trash"></i>
+                            Uninstall
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="refreshStatusBtn">
+                            <i class="fas fa-refresh"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="status-content">
+                    <div class="status-indicator">
+                        <i class="fas fa-circle"></i>
+                        <span>Checking...</span>
+                    </div>
+                    <div class="status-details" id="statusDetails">
+                        <p class="status-message">Checking Ollama service status...</p>
+                    </div>
+                    
+                    <!-- Installation Progress -->
+                    <div id="installationProgress" class="installation-progress" style="display: none;">
+                        <div class="progress-header">
+                            <h4>Installing Ollama</h4>
+                            <span class="progress-percentage">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="installProgressFill"></div>
+                        </div>
+                        <div class="progress-details">
+                            <p class="progress-message" id="installProgressMessage">Preparing installation...</p>
+                            <div class="download-details" id="downloadDetails" style="display: none;">
+                                <span class="download-speed">Speed: 0 MB/s</span>
+                                <span class="download-size">0 MB / 0 MB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Update Progress -->
+                    <div id="updateProgress" class="update-progress">
+                        <div class="update-status">
+                            <span class="update-message" id="updateMessage">Updating Ollama...</span>
+                            <span class="update-percentage" id="updatePercentage">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="updateProgressFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Models Grid -->
+            <div class="models-container">
+                <div class="models-header">
+                    <h2>Local Models</h2>
+                    <div class="view-controls">
+                        <div class="filter-controls">
+                            <select id="familyFilter" class="form-select">
+                                <option value="">All Families</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" id="refreshModelsBtn">
+                            <i class="fas fa-refresh"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="models-grid" id="modelsGrid">
+                    <!-- Models will be loaded here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Provider Configuration Modal -->
+        <div id="providerConfigModal" class="modal modal-large">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="providerConfigTitle">Configure Provider</h2>
+                    <button class="modal-close" data-modal="providerConfigModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="providerConfigContent">
+                        <!-- Provider configuration will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-modal="providerConfigModal">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button class="btn btn-primary" id="saveProviderConfigBtn">
+                        <i class="fas fa-save"></i>
+                        Save Configuration
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Detail Modal -->
+        <div id="modelDetailModal" class="modal modal-large">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modelDetailTitle">Model Details</h2>
+                    <button class="modal-close" data-modal="modelDetailModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="modelDetailContent">
+                        <!-- Model details will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Test Modal -->
+        <div id="modelTestModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modelTestTitle">Test Model</h2>
+                    <button class="modal-close" data-modal="modelTestModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="test-form">
+                        <div class="form-group">
+                            <label for="testPrompt">Test Prompt:</label>
+                            <textarea id="testPrompt" class="form-control" rows="3" placeholder="Enter a test prompt...">Hello, how are you?</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Model:</label>
+                            <div class="model-info">
+                                <span id="testModelName">-</span>
+                                <span id="testModelProvider" class="provider-badge">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="testResults" class="test-results" style="display: none;">
+                        <h4>Test Results</h4>
+                        <div class="result-item">
+                            <label>Response:</label>
+                            <div id="testResponse" class="response-content"></div>
+                        </div>
+                        <div class="result-meta">
+                            <span id="testResponseTime">Response time: -</span>
+                            <span id="testUsage">Usage: -</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-modal="modelTestModal">
+                        <i class="fas fa-times"></i>
+                        Close
+                    </button>
+                    <button class="btn btn-primary" id="runTestBtn">
+                        <i class="fas fa-play"></i>
+                        Run Test
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uninstall Confirmation Modal -->
+        <div id="uninstallConfirmModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>⚠️ Confirm Uninstall</h2>
+                    <button class="modal-close" data-modal="uninstallConfirmModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning-content">
+                        <div class="warning-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="warning-text">
+                            <h3>Are you sure you want to uninstall Ollama?</h3>
+                            <p>This action will:</p>
+                            <ul>
+                                <li>Remove the Ollama service completely</li>
+                                <li>Delete all downloaded models</li>
+                                <li>Clear all configuration data</li>
+                                <li>Stop all running AI operations</li>
+                            </ul>
+                            <p><strong>This action cannot be undone!</strong></p>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-secondary" data-modal="uninstallConfirmModal">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                        <button class="btn btn-danger" id="confirmUninstallBtn">
+                            <i class="fas fa-trash"></i>
+                            Yes, Uninstall Ollama
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading...</span>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { NavBar } from '../../js/components/navbar.js';
+        import './models.js';
+        
+        // Initialize navigation bar
+        const navbar = new NavBar({ currentPage: 'models' });
+        window.navbar = navbar;
+    </script>
+</body>
+</html> 
