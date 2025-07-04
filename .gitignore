@@ -60,3 +60,4 @@ temp/
 ./discussions-data/
 ./chats-data/
 src/config/
+ollama-backup
