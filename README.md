@@ -19,7 +19,7 @@ A web application for multi-model AI discussions supporting both local (Ollama) 
 
 Here's an example of AI models discussing a topic together:
 
-![AI Discussion Example](gif/Example1.gif)
+![AI Discussion Example](gifs/Example1.gif)
 
 *Multiple AI models engaging in a collaborative discussion, showcasing the system's ability to facilitate multi-model conversations.*
 
