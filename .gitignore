@@ -57,7 +57,7 @@ src/server/config/
 tmp/
 temp/ 
 
-./discussions-data/
-./chats-data/
+discussions-data
+chats-data
 src/config/
 ollama-backup
