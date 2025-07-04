@@ -15,6 +15,14 @@ A web application for multi-model AI discussions supporting both local (Ollama) 
 - ⚙️ **Provider Configuration**: Easy setup for multiple AI providers
 - 💰 **Cost Tracking**: Monitor usage and costs for cloud models
 
+## Demo
+
+Here's an example of AI models discussing a topic together:
+
+![AI Discussion Example](gif/Example1.gif)
+
+*Multiple AI models engaging in a collaborative discussion, showcasing the system's ability to facilitate multi-model conversations.*
+
 ## Quick Start
 
 1. **Clone the repository**:

@@ -57,7 +57,8 @@ src/server/config/
 tmp/
 temp/ 
 
-discussions-data
-chats-data
+# Ollama data
 src/config/
-ollama-backup
+ollama-backup/
+chats-data/
+discussions-data/
